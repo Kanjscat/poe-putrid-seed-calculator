@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PoE 3.30 Putrid Seed Calculator &amp; Passive Tree Explorer (Mycelium Core)</title>
+  <meta name="description" content="Interactive Path of Exile 3.30 (Covens of Umbra) Putrid Seed (Mycelium Core) oil calculator, 364-combo expected cost optimizer, Sister Cassia simulator, and passive skill tree explorer with all 30 hidden Blight-exclusive Prismatic Oil anointments.">
+  <meta name="keywords" content="Putrid Seed, Mycelium Core, PoE 3.30, Covens of Umbra, Path of Exile, Putrid Seed calculator, Blight anoint calculator, Prismatic Oil, hidden anointments, Adaptive Steel, passive skill tree explorer, Sister Cassia">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://kanjscat.github.io/poe-putrid-seed-calculator/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PoE 3.30 Putrid Seed Calculator">
+  <meta property="og:title" content="PoE 3.30 Putrid Seed (Mycelium Core) Calculator &amp; Passive Tree Explorer">
+  <meta property="og:description" content="Exact 3.30 Putrid Seed oil math (maxTier == oil buckets), 364-combo Chaos/Divine cost optimizer, Cassia roll simulator, and interactive passive tree with all 472 notables &amp; 30 hidden Prismatic anoints.">
+  <meta property="og:url" content="https://kanjscat.github.io/poe-putrid-seed-calculator/">
+  <meta property="og:image" content="https://kanjscat.github.io/poe-putrid-seed-calculator/assets/putrid_seed.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PoE 3.30 Putrid Seed (Mycelium Core) Calculator &amp; Passive Tree Explorer">
+  <meta name="twitter:description" content="Exact 3.30 Putrid Seed oil optimizer, Cassia simulator, and passive tree explorer for Path of Exile: Covens of Umbra.">
+  <meta name="twitter:image" content="https://kanjscat.github.io/poe-putrid-seed-calculator/assets/putrid_seed.png">
+  <link rel="icon" type="image/png" href="./assets/putrid_seed.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <canvas id="tree-canvas" aria-label="Interactive Path of Exile 3.30 Passive Skill Tree"></canvas>
+
+  <!-- Floating Top HUD Bar -->
+  <header class="top-bar" role="banner">
+    <div class="brand">
+      <img class="brand-icon" src="./assets/putrid_seed.png" alt="" aria-hidden="true">
+      <span class="brand-title">Putrid Seed Calc · 3.30</span>
+      <label for="hud-league-select" class="sr-only">Active Path of Exile League</label>
+      <select
+        id="hud-league-select"
+        class="league-pill league-select"
+        aria-label="Active Path of Exile League"
+        title="Switch active Path of Exile league for oil prices and PoE Trade search"
+      ></select>
+    </div>
+
+    <div class="search-jump-wrap">
+      <label for="quick-jump-input" class="sr-only">Quick jump to notable</label>
+      <input
+        id="quick-jump-input"
+        class="search-jump-input"
+        type="search"
+        placeholder="Jump to notable..."
+        aria-label="Quick jump to notable"
+        title="Search any of the 472 notables to focus on the tree"
+        autocomplete="off"
+      >
+      <div id="quick-jump-results" class="search-jump-results hidden" role="listbox" aria-label="Jump search matches"></div>
+    </div>
+
+    <div class="top-actions">
+      <button id="btn-fit-tree" type="button" class="btn btn-pill btn-sm" title="Reset camera to fit the entire 3.30 passive tree">Fit Tree</button>
+      <button id="btn-copy-share" type="button" class="btn btn-pill btn-sm btn-cyan" title="Copy shareable URL hash encoding socket, oils, targets, and allocations">Copy Link</button>
+      <button id="btn-open-mechanics" type="button" class="btn btn-pill btn-sm" title="View Putrid Seed 3.30 mechanics and probability formulas">Mechanics</button>
+      <button id="btn-open-donate" type="button" class="btn btn-pill btn-sm btn-support" title="Optional tip jar to support free hosting & future PoE league updates"><span class="support-heart" aria-hidden="true">&#9829;</span> Donate</button>
+      <button id="btn-toggle-left" type="button" class="btn btn-pill btn-sm btn-primary" title="Toggle Calculator & Optimizer sidebar">Calculator</button>
+      <button id="btn-toggle-right" type="button" class="btn btn-pill btn-sm" title="Toggle Putrid Seed Unique Item Preview Card">Seed Card</button>
+    </div>
+  </header>
+
+  <!-- Collapsible Left Calculator Panel -->
+  <aside id="left-panel" class="panel left-panel" aria-label="Putrid Seed Calculator Sidebar">
+    <div class="panel-header">
+      <h1 class="panel-title">Mycelium Core Lab</h1>
+      <button id="btn-close-left" type="button" class="btn btn-sm" title="Collapse left sidebar" aria-label="Collapse left sidebar">Hide</button>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Calculator sections">
+      <button id="tab-btn-optimizer" type="button" class="tab-btn is-active" role="tab" aria-selected="true" aria-controls="tab-optimizer" data-tab="optimizer">Oil Optimizer</button>
+      <button id="tab-btn-explorer" type="button" class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-explorer" data-tab="explorer">Explorer &amp; Roll</button>
+      <button id="tab-btn-trade" type="button" class="tab-btn" role="tab" aria-selected="false" aria-controls="tab-trade" data-tab="trade">Trade, PoB &amp; Oils</button>
+    </div>
+
+    <!-- TAB 1: OIL OPTIMIZER -->
+    <section id="tab-optimizer" class="tab-content" role="tabpanel" aria-labelledby="tab-btn-optimizer">
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Target Notables (<span id="target-count-label">0</span>)</h2>
+          <div class="top-actions">
+            <button id="btn-preset-aura" type="button" class="btn btn-sm" title="Load popular Aura / Curse example targets">Example</button>
+            <button id="btn-clear-targets" type="button" class="btn btn-sm btn-danger" title="Clear all target notables">Clear</button>
+          </div>
+        </div>
+        <div id="target-chips-wrap" class="chip-row"></div>
+        <p class="hint-text">Click notables in the list below or on the tree canvas to add or remove desired Putrid Seed hits.</p>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Probability &amp; Cost Parameters</h2>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="opt-min-hits">Minimum Hits (k of 4)</label>
+            <select id="opt-min-hits" class="form-control" title="Minimum number of target notables grown among the 4 Putrid Seed slots" aria-label="Minimum target hits required out of 4 rolled notables">
+              <option value="1" selected>At least 1 hit (1+/4)</option>
+              <option value="2">At least 2 hits (2+/4)</option>
+              <option value="3">At least 3 hits (3+/4)</option>
+              <option value="4">Exact jackpot (4/4)</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="opt-model">Probability Model</label>
+            <select id="opt-model" class="form-control" title="Choose pool filtering and draw weighting formula" aria-label="Probability model"></select>
+          </div>
+
+          <div class="form-field">
+            <label for="opt-max-tier">Max Oil Tier Ceiling</label>
+            <select id="opt-max-tier" class="form-control" title="Exclude oil combinations above this oil tier" aria-label="Maximum allowed oil tier"></select>
+          </div>
+
+          <div class="form-field">
+            <label for="opt-sort-by">Rank 364 Combos By</label>
+            <select id="opt-sort-by" class="form-control" title="Ordering metric for the 364 oil combinations" aria-label="Sort 364 oil combinations by">
+              <option value="expectedCost" selected>Lowest Expected Cost</option>
+              <option value="probability">Highest Hit Chance</option>
+              <option value="rollCost">Cheapest Single Roll</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="opt-include-tainted" class="checkbox-row" title="Add 1x Tainted Oil per attempt for re-anointing corrupted Putrid Seeds or Mycelium Cores">
+          <input id="opt-include-tainted" type="checkbox" aria-label="Include 1x Tainted Oil cost per roll for corrupted seeds" title="Include Tainted Oil cost per corrupted roll">
+          <span>Include 1x Tainted Oil per roll (corrupted re-anoint)</span>
+        </label>
+
+        <p id="opt-model-desc" class="hint-text"></p>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Best of 364 Oil Combinations</h2>
+          <span id="combo-summary-line" class="hint-text">Computing...</span>
+        </div>
+        <div id="combo-results-list" class="combo-list"></div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Pick Notables (472 Total)</h2>
+          <span id="notable-picker-count" class="hint-text">472</span>
+        </div>
+
+        <div id="quick-filter-chips" class="chip-row" aria-label="Quick stat tag filters"></div>
+
+        <div class="form-field">
+          <label for="notable-search-input" class="sr-only">Filter notables by name, modifier stats, or oil</label>
+          <input
+            id="notable-search-input"
+            class="form-control"
+            type="search"
+            placeholder="Filter by name, stat, or oil (e.g. suppression, prismatic)..."
+            aria-label="Filter notables by name, stat, or oil"
+            title="Search among all 442 tree notables and 30 Blight-exclusive notables"
+            autocomplete="off"
+          >
+        </div>
+
+        <div id="notable-picker-list" class="notable-picker-list"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: OIL EXPLORER & CASSIA BENCH -->
+    <section id="tab-explorer" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-btn-explorer">
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Choose 3 Distinct Oils</h2>
+          <button id="btn-sync-best-combo" type="button" class="btn btn-sm btn-primary" title="Load #1 ranked combination from Oil Optimizer">Use #1 Optimal</button>
+        </div>
+
+        <div class="oil-select-row">
+          <div class="form-field">
+            <label for="oil-slot-1">Oil 1</label>
+            <select id="oil-slot-1" class="form-control" title="First oil slot at Sister Cassia" aria-label="Oil slot 1"></select>
+          </div>
+          <div class="form-field">
+            <label for="oil-slot-2">Oil 2</label>
+            <select id="oil-slot-2" class="form-control" title="Second oil slot at Sister Cassia" aria-label="Oil slot 2"></select>
+          </div>
+          <div class="form-field">
+            <label for="oil-slot-3">Oil 3</label>
+            <select id="oil-slot-3" class="form-control" title="Third oil slot at Sister Cassia" aria-label="Oil slot 3"></select>
+          </div>
+        </div>
+
+        <div class="chip-row">
+          <button id="btn-preset-budget" type="button" class="btn btn-sm" title="Clear + Sepia + Amber (Pool = 10)">Budget (10)</button>
+          <button id="btn-preset-mid" type="button" class="btn btn-sm" title="Crimson + Violet + Opalescent (Pool = 142)">Mid Tier (142)</button>
+          <button id="btn-preset-endgame" type="button" class="btn btn-sm" title="Silver + Golden + Prismatic (Pool = 199)">Endgame (199)</button>
+        </div>
+
+        <div class="stats-strip">
+          <div class="stat-box">
+            <div class="stat-box-label">Eligible Pool</div>
+            <div id="exp-pool-size" class="stat-box-value">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-label">Targets In Pool</div>
+            <div id="exp-targets-hit" class="stat-box-value">0</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-label">Hit Chance</div>
+            <div id="exp-hit-prob" class="stat-box-value">0.00%</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-box-label">Expected Cost</div>
+            <div id="exp-cost-line" class="stat-box-value">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Cassia Anoint Simulator</h2>
+          <span id="bench-stats-line" class="hint-text">0 rolls · 0c</span>
+        </div>
+
+        <div class="top-actions">
+          <button id="btn-roll-once" type="button" class="btn btn-primary" title="Simulate anointing 1 Putrid Seed with selected oils">Anoint 1x</button>
+          <button id="btn-auto-roll" type="button" class="btn btn-success" title="Keep rolling until target minimum hits are satisfied">Auto-Roll Hit</button>
+          <button id="btn-reset-bench" type="button" class="btn btn-sm" title="Reset simulator roll history and rolled notables">Reset</button>
+        </div>
+
+        <div id="bench-rolled-slots" class="bench-slots"></div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Eligible Pool Breakdown</h2>
+        </div>
+        <div class="form-field">
+          <label for="pool-search-input" class="sr-only">Filter notables in eligible oil pool</label>
+          <input
+            id="pool-search-input"
+            class="form-control"
+            type="search"
+            placeholder="Filter eligible notables in this pool..."
+            aria-label="Filter notables inside current eligible pool"
+            title="Search notables that can roll from the selected 3 oils"
+            autocomplete="off"
+          >
+        </div>
+        <div id="pool-notables-list" class="pool-list"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: TRADE, POB & LIVE OIL PRICES -->
+    <section id="tab-trade" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-btn-trade">
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Official PoE Trade Search</h2>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="trade-league">League</label>
+            <select id="trade-league" class="form-control" title="Path of Exile league for Trade URL & poe.ninja prices" aria-label="Path of Exile league"></select>
+          </div>
+          <div class="form-field">
+            <label for="trade-min-hits">Min Matching Enchants</label>
+            <select id="trade-min-hits" class="form-control" title="Minimum number of selected target notables on Trade query" aria-label="Minimum matching target notables for PoE Trade">
+              <option value="1" selected>Count &gt;= 1 (OR)</option>
+              <option value="2">Count &gt;= 2</option>
+              <option value="3">Count &gt;= 3</option>
+              <option value="4">Exact All 4 (AND)</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="trade-include-bricked" class="checkbox-row" title="Include bricked rare/normal corrupted Mycelium Core bases that still grant their 4 rolled notables">
+          <input id="trade-include-bricked" type="checkbox" checked aria-label="Include bricked corrupted Mycelium Core bases in trade query" title="Include bricked Mycelium Core bases">
+          <span>Include bricked Mycelium Core bases</span>
+        </label>
+
+        <div class="top-actions">
+          <button id="btn-open-trade" type="button" class="btn btn-primary" title="Open pathofexile.com/trade with Putrid Seed enchant stat filters prefilled">Open PoE Trade</button>
+          <button id="btn-copy-trade-json" type="button" class="btn btn-sm" title="Copy raw PoE Trade API JSON query">Copy JSON</button>
+        </div>
+
+        <div class="form-field">
+          <label for="trade-json-preview">Trade Filter Payload (`enchant.stat_3599615742`)</label>
+          <textarea id="trade-json-preview" class="form-control" readonly aria-label="Generated PoE Trade JSON query payload" title="Read-only preview of official PoE Trade search payload"></textarea>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Path of Building Item Export</h2>
+        </div>
+
+        <label for="pob-corrupted" class="checkbox-row" title="Include Corrupted flag on exported Path of Building item text">
+          <input id="pob-corrupted" type="checkbox" aria-label="Mark Path of Building exported jewel as Corrupted" title="Export PoB item as Corrupted">
+          <span>Corrupted (e.g. Tainted Oil re-anointed)</span>
+        </label>
+
+        <div class="top-actions">
+          <button id="btn-copy-pob" type="button" class="btn btn-cyan" title="Copy Path of Building Custom Jewel text to clipboard">Copy PoB Item</button>
+        </div>
+
+        <div class="form-field">
+          <label for="pob-item-preview">PoB Custom Jewel Text</label>
+          <textarea id="pob-item-preview" class="form-control" readonly aria-label="Path of Building custom jewel export text" title="Copy and paste into Path of Building Items / Create Custom"></textarea>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-head">
+          <h2 class="section-title">Oil Prices (Chaos Orb)</h2>
+          <div class="top-actions">
+            <button id="btn-open-ninja-oils" type="button" class="btn btn-sm btn-success" title="Open live poe.ninja Oil prices page for the selected league">poe.ninja Oils &#8599;</button>
+            <button id="btn-refresh-prices" type="button" class="btn btn-sm" title="Reload latest snapshot (or local dev proxy if running locally)">Refresh</button>
+            <button id="btn-reset-prices" type="button" class="btn btn-sm" title="Clear saved custom edits and restore snapshot prices">Reset</button>
+          </div>
+        </div>
+
+        <p id="prices-status-text" class="hint-text">Loaded bundled 3.30 Covens snapshot.</p>
+
+        <details class="json-import-box">
+          <summary class="json-import-summary">Quick Import: Paste live poe.ninja JSON (no server)</summary>
+          <div class="top-actions">
+            <button id="btn-open-ninja-json" type="button" class="btn btn-sm btn-cyan" title="Open live poe.ninja Oil JSON in a new tab — copy all and paste below">1. Open Live JSON &#8599;</button>
+            <button id="btn-apply-ninja-json" type="button" class="btn btn-sm btn-primary" title="Parse pasted poe.ninja JSON and update all oil prices">2. Apply JSON</button>
+          </div>
+          <div class="form-field">
+            <label for="ninja-json-input" class="sr-only">Paste poe.ninja oil exchange JSON</label>
+            <textarea
+              id="ninja-json-input"
+              class="form-control json-import-textarea"
+              placeholder="Paste JSON from poe.ninja here to update all 15 oils + Divine ratio..."
+              aria-label="Paste poe.ninja oil exchange JSON"
+              title="Paste copied JSON from the poe.ninja oil API tab"
+            ></textarea>
+          </div>
+        </details>
+
+        <div class="form-field">
+          <label for="divine-chaos-input">Divine Orb Ratio (Chaos)</label>
+          <input
+            id="divine-chaos-input"
+            class="form-control"
+            type="number"
+            min="1"
+            step="0.5"
+            aria-label="Divine Orb value in Chaos Orbs"
+            title="Chaos Orb equivalent of 1 Divine Orb"
+          >
+        </div>
+
+        <div id="oil-prices-grid" class="price-grid"></div>
+      </div>
+    </section>
+  </aside>
+
+  <!-- Floating Right Putrid Seed Item Card -->
+  <aside id="right-panel" class="panel right-panel" aria-label="Putrid Seed Unique Item Preview">
+    <div class="panel-header">
+      <h2 class="panel-title">Putrid Seed Preview</h2>
+      <button id="btn-close-right" type="button" class="btn btn-sm" title="Collapse Putrid Seed Preview" aria-label="Collapse Putrid Seed Preview">Hide</button>
+    </div>
+
+    <div class="right-body">
+      <div class="seed-item-card">
+        <div class="seed-item-header">
+          <img class="seed-card-icon" src="./assets/putrid_seed.png" alt="Putrid Seed icon">
+          <div>
+            <div class="seed-item-name">Putrid Seed</div>
+            <div class="seed-item-base">Mycelium Core</div>
+          </div>
+        </div>
+        <div id="seed-card-enchants" class="seed-item-enchants"></div>
+        <div class="seed-item-explicit">
+          <div>Grows four random Passive Skills when Anointed</div>
+          <div>Passive Skills grown are influenced by Oils used when Anointing</div>
+        </div>
+        <div id="seed-card-enchant-meta" class="seed-item-meta"></div>
+        <div id="seed-card-corrupted" class="seed-item-corrupted hidden">Corrupted</div>
+      </div>
+
+      <div id="seed-card-oils" class="seed-card-oils" aria-label="Selected 3 Oils"></div>
+
+      <div class="card-actions-grid">
+        <button id="btn-card-roll" type="button" class="btn btn-primary" title="Simulate anointing Putrid Seed once at Sister Cassia">Anoint 1x</button>
+        <button id="btn-card-auto-roll" type="button" class="btn btn-success" title="Keep rolling until target minimum hits are satisfied">Auto-Roll Hit</button>
+      </div>
+
+      <div class="card-actions-grid">
+        <button id="btn-card-copy-pob" type="button" class="btn btn-sm btn-cyan" title="Copy Path of Building Custom Jewel text">Copy PoB</button>
+        <button id="btn-card-open-trade" type="button" class="btn btn-sm btn-primary" title="Open pathofexile.com/trade search for current targets or rolled notables">Open Trade</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Blight-Exclusive Notables Dock -->
+  <div id="blight-dock" class="blight-dock">
+    <div id="blight-drawer" class="blight-drawer hidden" role="region" aria-label="30 Hidden Blight-Exclusive Anointments">
+      <div class="section-head">
+        <h2 class="section-title">30 Hidden Anointments (Prismatic Oil Pool)</h2>
+        <button id="btn-close-blight-drawer" type="button" class="btn btn-sm" title="Close Hidden Anoints drawer">Close</button>
+      </div>
+      <p class="hint-text">These 30 hidden anointments (like Adaptive Steel) appear floating on the passive tree canvas matching PoB 3.30 and enter the Putrid Seed pool when using Prismatic Oil.</p>
+      <div id="blight-drawer-grid" class="blight-drawer-grid"></div>
+    </div>
+
+    <div class="blight-pill-bar">
+      <span id="blight-pill-text">Hidden Anoints: 0 / 30 in Pool</span>
+      <button id="btn-toggle-blight-drawer" type="button" class="btn btn-sm btn-pill" title="Expand drawer showing all 30 hidden Prismatic-Oil anointments">30 Hidden Anoints</button>
+    </div>
+  </div>
+
+  <!-- Canvas Color Legend -->
+  <div class="canvas-legend" aria-hidden="true">
+    <span class="legend-item"><span class="legend-swatch swatch-pool"></span>In Oil Pool</span>
+    <span class="legend-item"><span class="legend-swatch swatch-hidden"></span>Hidden Anoint</span>
+    <span class="legend-item"><span class="legend-swatch swatch-target"></span>Target</span>
+    <span class="legend-item"><span class="legend-swatch swatch-rolled"></span>Rolled Hit</span>
+  </div>
+
+  <!-- Hover Tooltip -->
+  <div id="canvas-tooltip" class="tooltip hidden" role="tooltip" aria-label="Passive tree node details" title="Passive tree node details">
+    <h3 id="tooltip-title" class="tooltip-title"></h3>
+    <p id="tooltip-subtitle" class="tooltip-subtitle hidden"></p>
+    <ul id="tooltip-stats" class="tooltip-stats"></ul>
+    <div id="tooltip-oils" class="tooltip-oils hidden"></div>
+  </div>
+
+  <!-- Mechanics Guide Modal -->
+  <div id="mechanics-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="mechanics-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="mechanics-modal-title" class="panel-title">Putrid Seed (3.30 Covens of Umbra) Mechanics</h2>
+        <button id="btn-close-mechanics" type="button" class="btn btn-sm" title="Close Mechanics Guide">Close</button>
+      </div>
+      <div class="modal-body">
+        <h3>1. Anointing &amp; Mycelium Core Enchants</h3>
+        <p>Take an uncorrupted <strong>Putrid Seed</strong> to Sister Cassia and anoint it with <strong>3 distinct Oils</strong> from the 14 standard oils to roll 4 random <code>1 added passive skill is &lt;Notable&gt;</code> enchants without corrupting the jewel. When placed into one of the 6 Outer Large Jewel Sockets, it grows 4 notable passives plus 8 socket-specific small passives.</p>
+        <ul>
+          <li>Corrupted Putrid Seeds / bricked corrupted Mycelium Core bases require <strong>1x Tainted Oil + 3 distinct regular oils</strong> to re-anoint randomly.</li>
+          <li>All added passives require passive skill points to allocate, do not interact with jewel radii, and cannot be altered by Timeless jewels.</li>
+        </ul>
+
+        <h3>2. Verified Pool Filtering &amp; Probability Models</h3>
+        <p>Every anointable notable has a 3-oil recipe with maximum tier <code>T_node = max(tier(recipe))</code>. Across 117 audited Covens Trade seeds and 1,238 <code>&lt;4</code>-enchant listings (0 violations), each oil maps to a disjoint <code>maxTier == oil</code> bucket of size: Clear (<strong>1</strong>), Sepia (<strong>3</strong>), Amber (<strong>6</strong>), Verdant (<strong>10</strong>), Teal (<strong>15</strong>), Azure (<strong>21</strong>), Indigo (<strong>21</strong>), Violet (<strong>34</strong>), Crimson (<strong>43</strong>), Black (<strong>54</strong>), Opalescent (<strong>65</strong>), Silver (<strong>78</strong>), Golden (<strong>90</strong>), Prismatic (<strong>31</strong>).</p>
+        <ul>
+          <li><strong>Per-Oil Max-Tier Bucket (Verified 3.30 Default):</strong> Each of 4 independent slots picks 1 of your 3 chosen oils with equal <code>1/3</code> chance, then draws uniformly <em>without replacement</em> from that oil's <code>maxTier == oil</code> bucket. If you include Clear (size 1) or Sepia (size 3), repeated hits exhaust the bucket and yield fewer than 4 enchants (<code>Clear</code>: 59.3% 4e / 29.6% 3e / 9.9% 2e / 1.2% 1e; <code>Sepia</code>: 98.8% 4e / 1.2% 3e; Amber+ always yields 4 enchants). Because each bucket's hit rate depends only on its own size, pairing a chase oil with cheap oils (e.g. <code>Clear + Sepia + Prismatic</code>) gives the exact same hit chance per Prismatic notable (<code>4/93 = 4.30%</code>) as <code>Silver + Golden + Prismatic</code>.</li>
+          <li><strong>Legacy Per-Oil Overlap (Pre-Audit):</strong> Legacy hypothesis drawing with replacement across <code>maxTier &lt;= max(chosen3)</code> matching oils.</li>
+          <li><strong>Uniform / Overlap-Biased / Strict Subset (References):</strong> Reference comparison models (uniform hypergeometric, <code>1:2:3</code> weighted overlap, and strict 3-oil subset).</li>
+        </ul>
+
+        <h3>3. Trade Search &amp; 30 Hidden Blight-Exclusive Notables</h3>
+        <p>Official Path of Exile 3.30 Trade maps all 472 notables — 442 standard + 30 hidden Blight-exclusive anointments (such as <strong>Adaptive Steel</strong>) rendered directly on the passive skill tree canvas — to <code>enchant.stat_3599615742|&lt;node_id&gt;</code>. Use the Hidden Anoints drawer or click them straight on the tree to target and optimize oil recipes.</p>
+
+        <p class="modal-footer-support">Free, ad-free community tool · <button id="btn-mechanics-donate" type="button" class="link-btn">Support this project &#9829;</button></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Optional Support / Tip Jar Modal -->
+  <div id="donate-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="donate-modal-title">
+    <div class="modal-dialog modal-dialog-sm">
+      <div class="modal-header">
+        <h2 id="donate-modal-title" class="panel-title">Support Putrid Seed Calc</h2>
+        <button id="btn-close-donate" type="button" class="btn btn-sm" title="Close Support Dialog">Close</button>
+      </div>
+      <div class="modal-body">
+        <p id="donate-modal-message"></p>
+        <div id="donate-links-list" class="donate-links"></div>
+        <p id="donate-modal-footnote" class="hint-text"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feedback Toast -->
+  <div id="toast-banner" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

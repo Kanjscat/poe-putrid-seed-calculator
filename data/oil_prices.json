@@ -1,0 +1,95 @@
+{
+  "league": "Covens",
+  "divineChaos": 214,
+  "updatedAt": "2026-11-22T02:32:26.386Z",
+  "source": "https://poe.ninja/poe1/api/economy/exchange/current/overview?league=Covens&type=Oil",
+  "prices": {
+    "AzureOil": 0.2654,
+    "BlackOil": 3.34,
+    "AmberOil": 0.2336,
+    "ClearOil": 0.1458,
+    "CrimsonOil": 1.48,
+    "IndigoOil": 0.4254,
+    "OpalescentOil": 9.31,
+    "ReflectiveOil": 5.52,
+    "SepiaOil": 0.2235,
+    "SilverOil": 29.65,
+    "VioletOil": 0.8071,
+    "GoldenOil": 88.78,
+    "PrismaticOil": 1835,
+    "TaintedOil": 212.3,
+    "TealOil": 0.3991,
+    "VerdantOil": 0.2925
+  },
+  "byLeague": {
+    "Covens": {
+      "league": "Covens",
+      "divineChaos": 214,
+      "updatedAt": "2026-11-22T02:32:26.386Z",
+      "source": "https://poe.ninja/poe1/api/economy/exchange/current/overview?league=Covens&type=Oil",
+      "prices": {
+        "AzureOil": 0.2654,
+        "BlackOil": 3.34,
+        "AmberOil": 0.2336,
+        "ClearOil": 0.1458,
+        "CrimsonOil": 1.48,
+        "IndigoOil": 0.4254,
+        "OpalescentOil": 9.31,
+        "ReflectiveOil": 5.52,
+        "SepiaOil": 0.2235,
+        "SilverOil": 29.65,
+        "VioletOil": 0.8071,
+        "GoldenOil": 88.78,
+        "PrismaticOil": 1835,
+        "TaintedOil": 212.3,
+        "TealOil": 0.3991,
+        "VerdantOil": 0.2925
+      }
+    },
+    "Hardcore Covens": {
+      "league": "Hardcore Covens",
+      "divineChaos": 130.5,
+      "updatedAt": "2026-11-22T02:32:26.445Z",
+      "source": "https://poe.ninja/poe1/api/economy/exchange/current/overview?league=Hardcore%20Covens&type=Oil",
+      "prices": {
+        "AzureOil": 1,
+        "AmberOil": 0.5333,
+        "BlackOil": 7.24,
+        "ClearOil": 0.5,
+        "CrimsonOil": 4.26,
+        "IndigoOil": 0.9583,
+        "OpalescentOil": 20.07,
+        "SepiaOil": 0.3333,
+        "SilverOil": 29.07,
+        "VioletOil": 2.68,
+        "GoldenOil": 65.09,
+        "PrismaticOil": 166.3,
+        "TaintedOil": 130.5,
+        "TealOil": 4,
+        "VerdantOil": 1
+      }
+    },
+    "Standard": {
+      "league": "Standard",
+      "divineChaos": 790.5,
+      "updatedAt": "2026-11-22T02:32:26.483Z",
+      "source": "https://poe.ninja/poe1/api/economy/exchange/current/overview?league=Standard&type=Oil",
+      "prices": {
+        "AzureOil": 4,
+        "BlackOil": 27.18,
+        "ClearOil": 0.3333,
+        "CrimsonOil": 6.42,
+        "IndigoOil": 12,
+        "OpalescentOil": 141.9,
+        "SepiaOil": 0.3333,
+        "SilverOil": 274.2,
+        "VioletOil": 9.86,
+        "GoldenOil": 605.4,
+        "PrismaticOil": 2865,
+        "TaintedOil": 4118,
+        "TealOil": 2.33,
+        "VerdantOil": 1
+      }
+    }
+  }
+}

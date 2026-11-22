@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kanjscat.github.io/poe-putrid-seed-calculator/sitemap.xml

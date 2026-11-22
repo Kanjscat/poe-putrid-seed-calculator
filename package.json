@@ -1,0 +1,17 @@
+{
+  "name": "poe-putrid-seed-calculator",
+  "version": "1.0.0",
+  "description": "Path of Exile 3.30.0 (Covens of Umbra) Putrid Seed (Mycelium Core) exact oil optimizer, Cassia simulator, and passive skill tree explorer.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "node ./scripts/serve.mjs",
+    "test": "node --test ./tests/engine.test.mjs",
+    "update-prices": "node ./scripts/update_prices.mjs",
+    "build-tree": "node ./scripts/build_data.mjs --tree-only",
+    "build-data": "node ./scripts/build_data.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
